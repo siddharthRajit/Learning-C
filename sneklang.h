@@ -1,4 +1,5 @@
 #pragma once
+#include <stddef.h>
 
 typedef enum SnekObjectKind {
     INTEGER,
@@ -15,6 +16,15 @@ typedef struct SnekObject {
     snek_object_data_t data;
 } snek_object_t;
 
+typedef struct Stack {
+    size_t count;
+    size_t capacity;
+    void **data;
+} stack_t;
+
 snek_object_t new_integer(int);
 snek_object_t new_string(char *str);
 void format_object(snek_object_t obj, char *buffer);
+stack_t *stack_new(size_t capacity);
+void stack_push(stack_t *stack, void *obj);
+void *stack_pop(stack_t *stack);
