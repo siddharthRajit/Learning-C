@@ -58,7 +58,7 @@ stack_t *stack_new(size_t capacity) {
     s->data = malloc(sizeof(void *) * capacity);
     if (s->data == NULL) {
         free(s);
-        return NULL;
+        return nullptr;
     }
 
     return s;
@@ -79,4 +79,22 @@ void *stack_pop(stack_t *stack) {
     if (stack->count == 0) { return NULL; }
     stack->count--;
     return stack->data[stack->count];
+}
+
+void stack_free(stack_t *stack) {
+    if (stack == NULL) { return; }
+    if (stack->data != NULL) {
+        free(stack->data);
+    }
+    free(stack);
+}
+
+void scary_stack_push(stack_t *stack) {
+    stack_push(stack, (void *)1337);
+
+    int *ptr = malloc(sizeof(int));
+    *ptr = 1024;
+
+    stack_push(stack, (void *)ptr);
+
 }
