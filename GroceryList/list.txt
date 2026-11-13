@@ -1,0 +1,7 @@
+Apples 5
+\Orabges 5
+Apples 5
+Oranges 3
+Bananas 2
+Rice 1
+Chicken 2
