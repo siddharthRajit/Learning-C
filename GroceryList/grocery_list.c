@@ -12,31 +12,42 @@ int main() {
     //Save grocery list somewhere
     item_t items[MAX_ITEMS];
     int count = 0;
+    int user_input = 0;
+    load_items(items, &count);
 
-    printf("1. List grocery item\n");
-    printf("2. Add grocery item\n");
-    printf("3. Update grocery item\n");
-    printf("4. Delete grocery item\n");
-    int user_input;
-    printf("Enter a choice (1-5): ");
-    scanf("%d", &user_input);
+    while (user_input != 7) {
+        printf("1. List grocery item\n");
+        printf("2. Add grocery item\n");
+        printf("3. Update grocery item\n");
+        printf("4. Delete grocery item\n");
+        printf("7. Exit program\n");
+        printf("Enter a choice (1-5): ");
+        scanf("%d", &user_input);
 
-    //Add functionality to add to the list
-    switch (user_input) {
-        case 2: {
-            char name[NAME_LEN];
-            int quantity;
-            printf("Enter a item name and quantity: ");
-            scanf("%49s %d", name, &quantity);
-            add_item(items, name, quantity, &count);
-            break;
+        //Add functionality to add to the list
+        switch (user_input) {
+            case 1: {
+
+                for (int i = 0; i < count; i++) {
+                    printf("Item%d: %s x%d\n", i + 1, items[i].item_name, items[i].quantity);
+                }
+                break;
+            }
+            case 2: {
+                char name[NAME_LEN];
+                int quantity;
+                printf("Enter a item name and quantity: ");
+                scanf("%49s %d", name, &quantity);
+                int result = add_item(items, name, quantity, &count);
+                if (result == -1) { printf("Error"); }
+                save_items(items, &count);
+                break;
+            }
+            case 7: break;
+            default: printf("INVALID INPUT");
         }
-        default: printf("INVALID INPUT");
     }
 
-    for (int i = 0; i < count; i++) {
-        printf("Item%d: %s x%d\n", i + 1, items[i].item_name, items[i].quantity);
-    }
 }
 
 int add_item(item_t *items, char *item_name, int quantity, int *count) {
@@ -49,4 +60,28 @@ int add_item(item_t *items, char *item_name, int quantity, int *count) {
 
     (*count)++;
     return 0;
+}
+
+void save_items(item_t* items, int* count) {
+    FILE *fp = fopen("list.txt", "w");
+    if (fp == NULL) { return; }
+
+    for (int i = 0; i < *count; i++) {
+        fprintf(fp, "%s %d\n", items[i].item_name, items[i].quantity);
+    }
+
+    fclose(fp);
+}
+
+void load_items(item_t *items, int *count) {
+    FILE *fp = fopen("list.txt", "r");
+    if (fp == NULL) { return; }
+
+    char name[50];
+    int quantity;
+    while (*count < MAX_ITEMS && fscanf(fp, "%49s %d", name, &quantity) == 2) {
+        add_item(items, name, quantity, count);
+    }
+
+    fclose(fp);
 }
